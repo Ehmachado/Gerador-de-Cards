@@ -1383,28 +1383,33 @@
             
             const ctx = galeriaCanvas.getContext('2d');
             
-            // Fundo da galeria com gradiente
+            // Fundo da galeria com gradiente DO TEMA SELECIONADO
             const gradient = ctx.createLinearGradient(0, 0, galeriaCanvas.width, galeriaCanvas.height);
             gradient.addColorStop(0, currentTheme.bgColors[0]);
-            gradient.addColorStop(0.5, currentTheme.bgColors[1]);
-            gradient.addColorStop(1, currentTheme.bgColors[2]);
+            gradient.addColorStop(0.33, currentTheme.bgColors[1]);
+            gradient.addColorStop(0.66, currentTheme.bgColors[2]);
+            gradient.addColorStop(1, currentTheme.bgColors[3] || currentTheme.bgColors[1]);
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, galeriaCanvas.width, galeriaCanvas.height);
             
-            // Adicionar padrão decorativo suave
-            ctx.globalAlpha = 0.05;
+            // Adicionar padrão decorativo do tema
+            ctx.save();
+            ctx.globalAlpha = 0.06;
             drawPattern(ctx, currentTheme.patternType);
             ctx.globalAlpha = 1;
+            ctx.restore();
             
-            // Título da galeria
-            ctx.font = 'bold 60px Poppins';
+            // Título da galeria com fonte e cor do tema
+            ctx.font = `bold 60px ${currentTheme.fontFamily}`;
             ctx.fillStyle = currentTheme.primaryColor;
             ctx.textAlign = 'center';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowColor = currentTheme.shadowColor;
             ctx.shadowBlur = 30;
             ctx.shadowOffsetY = 10;
             ctx.fillText('🏆 SUPER BARREIRAS 🏆', galeriaCanvas.width / 2, 70);
-            ctx.font = 'bold 40px Poppins';
+            
+            ctx.font = `bold 40px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.secondaryColor;
             ctx.fillText('CAMPEÕES', galeriaCanvas.width / 2, 120);
             ctx.shadowBlur = 0;
             ctx.shadowOffsetY = 0;
@@ -1420,11 +1425,16 @@
                 // Pegar canvas individual
                 const sourceCanvas = document.getElementById(`canvas-${index}`);
                 if (sourceCanvas) {
-                    // Sombra do card
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                    // Sombra do card com cor do tema
+                    ctx.shadowColor = currentTheme.shadowColor;
                     ctx.shadowBlur = 30;
                     ctx.shadowOffsetX = 5;
                     ctx.shadowOffsetY = 15;
+                    
+                    // Moldura colorida ao redor de cada card
+                    ctx.strokeStyle = currentTheme.accentColor;
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(x - 2, y - 2, cardWidth + 4, cardHeight + 4);
                     
                     // Desenhar card redimensionado
                     ctx.drawImage(sourceCanvas, x, y, cardWidth, cardHeight);
@@ -1435,14 +1445,21 @@
                 }
             });
             
-            // Rodapé
+            // Rodapé com cores do tema
             const nomeDesafio = document.getElementById('nomeDesafio').value || 'Desafio';
-            ctx.font = 'bold 40px Poppins';
+            ctx.font = `bold 40px ${currentTheme.fontFamily}`;
             ctx.fillStyle = currentTheme.primaryColor;
             ctx.textAlign = 'center';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowColor = currentTheme.shadowColor;
             ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 5;
             ctx.fillText(nomeDesafio, galeriaCanvas.width / 2, galeriaCanvas.height - 40);
+            
+            // Linha decorativa no rodapé
+            ctx.strokeStyle = currentTheme.secondaryColor;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            drawWavyLine(ctx, galeriaCanvas.width / 2 - 200, galeriaCanvas.height - 70, galeriaCanvas.width / 2 + 200, galeriaCanvas.height - 70);
             
             // Scroll para a galeria
             galeriaCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
