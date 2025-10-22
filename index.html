@@ -347,6 +347,7 @@
 
         .card-preview-item {
             text-align: center;
+            position: relative;
         }
 
         .card-preview-item canvas {
@@ -360,6 +361,24 @@
         .card-preview-item p {
             font-weight: 600;
             color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .card-download-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .card-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
     </style>
 </head>
@@ -885,11 +904,20 @@
                 const label = document.createElement('p');
                 label.textContent = pessoa.nome;
                 
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'card-download-btn';
+                downloadBtn.textContent = '💾 Baixar Card';
+                downloadBtn.onclick = () => downloadIndividualCard(index, pessoa.nome);
+                
                 container.appendChild(canvas);
                 container.appendChild(label);
+                container.appendChild(downloadBtn);
                 grid.appendChild(container);
                 
-                drawCard(canvas, pessoa);
+                // Aguardar um pouco para garantir que o canvas foi adicionado ao DOM
+                setTimeout(() => {
+                    drawCard(canvas, pessoa);
+                }, 10);
             });
         }
 
@@ -1225,21 +1253,30 @@
             }
 
             pessoas.forEach((pessoa, index) => {
-                const canvas = document.getElementById(`canvas-${index}`);
-                
                 setTimeout(() => {
-                    canvas.toBlob(function(blob) {
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `card_${pessoa.nome.replace(/\s+/g, '_')}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    }, 'image/png', 1.0);
+                    downloadIndividualCard(index, pessoa.nome);
                 }, index * 300); // Delay entre downloads
             });
+        }
+
+        function downloadIndividualCard(index, nomePessoa) {
+            const canvas = document.getElementById(`canvas-${index}`);
+            
+            if (!canvas) {
+                console.error('Canvas não encontrado:', index);
+                return;
+            }
+            
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `card_${nomePessoa.replace(/\s+/g, '_')}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png', 1.0);
         }
 
         function processarTabela() {
@@ -1288,8 +1325,10 @@
                 }
             });
             
-            // Atualizar previews
-            updateAllPreviews();
+            // Atualizar previews após um pequeno delay para garantir que as fotos foram carregadas
+            setTimeout(() => {
+                updateAllPreviews();
+            }, 500);
             
             alert(`✅ ${Math.min(linhas.length, 10)} pessoa(s) importada(s) com sucesso!`);
         }
@@ -1303,16 +1342,18 @@
             }
 
             const galeriaCanvas = document.getElementById('galeriaCanvas');
-            const cardWidth = 700;
-            const cardHeight = 1000;
-            const spacing = 30; // Espaçamento entre cards
-            const margin = 50; // Margem externa
+            const cardWidth = 350; // Reduzido para caber melhor
+            const cardHeight = 500; // Reduzido proporcionalmente
+            const spacing = 20; // Espaçamento entre cards
+            const margin = 60; // Margem externa
+            const tituloHeight = 150; // Espaço para título
+            const rodapeHeight = 100; // Espaço para rodapé
             
             const linhas = Math.ceil(pessoas.length / colunas);
             
             // Calcular dimensões da galeria
             galeriaCanvas.width = (cardWidth * colunas) + (spacing * (colunas - 1)) + (margin * 2);
-            galeriaCanvas.height = (cardHeight * linhas) + (spacing * (linhas - 1)) + (margin * 2);
+            galeriaCanvas.height = tituloHeight + (cardHeight * linhas) + (spacing * (linhas - 1)) + margin + rodapeHeight;
             
             const ctx = galeriaCanvas.getContext('2d');
             
@@ -1330,13 +1371,15 @@
             ctx.globalAlpha = 1;
             
             // Título da galeria
-            ctx.font = 'bold 80px Poppins';
+            ctx.font = 'bold 60px Poppins';
             ctx.fillStyle = currentTheme.primaryColor;
             ctx.textAlign = 'center';
             ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = 30;
             ctx.shadowOffsetY = 10;
-            ctx.fillText('🏆 SUPER BARREIRAS - CAMPEÕES 🏆', galeriaCanvas.width / 2, 100);
+            ctx.fillText('🏆 SUPER BARREIRAS 🏆', galeriaCanvas.width / 2, 70);
+            ctx.font = 'bold 40px Poppins';
+            ctx.fillText('CAMPEÕES', galeriaCanvas.width / 2, 120);
             ctx.shadowBlur = 0;
             ctx.shadowOffsetY = 0;
             
@@ -1346,32 +1389,37 @@
                 const row = Math.floor(index / colunas);
                 
                 const x = margin + (col * (cardWidth + spacing));
-                const y = margin + 150 + (row * (cardHeight + spacing)); // 150 para dar espaço ao título
+                const y = tituloHeight + (row * (cardHeight + spacing));
                 
                 // Pegar canvas individual
                 const sourceCanvas = document.getElementById(`canvas-${index}`);
                 if (sourceCanvas) {
                     // Sombra do card
                     ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-                    ctx.shadowBlur = 40;
-                    ctx.shadowOffsetY = 20;
+                    ctx.shadowBlur = 30;
+                    ctx.shadowOffsetX = 5;
+                    ctx.shadowOffsetY = 15;
                     
-                    // Desenhar card
+                    // Desenhar card redimensionado
                     ctx.drawImage(sourceCanvas, x, y, cardWidth, cardHeight);
                     
                     ctx.shadowBlur = 0;
+                    ctx.shadowOffsetX = 0;
                     ctx.shadowOffsetY = 0;
                 }
             });
             
             // Rodapé
             const nomeDesafio = document.getElementById('nomeDesafio').value || 'Desafio';
-            ctx.font = 'bold 50px Poppins';
+            ctx.font = 'bold 40px Poppins';
             ctx.fillStyle = currentTheme.primaryColor;
             ctx.textAlign = 'center';
             ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = 20;
-            ctx.fillText(nomeDesafio, galeriaCanvas.width / 2, galeriaCanvas.height - 50);
+            ctx.fillText(nomeDesafio, galeriaCanvas.width / 2, galeriaCanvas.height - 40);
+            
+            // Scroll para a galeria
+            galeriaCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function exportarGaleria() {
@@ -1386,7 +1434,7 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `galeria_campeoes_${Date.now()}.png`;
+                a.download = `galeria_super_barreiras_${Date.now()}.png`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
