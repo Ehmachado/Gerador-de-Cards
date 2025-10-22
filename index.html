@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Barreiras - Gerador de Cards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Montserrat:wght@300;400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Bebas+Neue&family=Righteous&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            max-width: 1400px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-size: 3em;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            padding: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .file-input-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .themes-section {
+            margin-bottom: 30px;
+        }
+
+        .themes-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .themes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .theme-btn {
+            padding: 20px;
+            border: 4px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            font-size: 1em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .theme-btn:hover::before {
+            opacity: 1;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .theme-btn.active {
+            border-color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transform: scale(1.08);
+        }
+
+        .preview-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        #cardCanvas {
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .export-btn {
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .export-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+        }
+
+        .info {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-left: 5px solid #0ea5e9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .info strong {
+            color: #0c4a6e;
+        }
+
+        .pessoas-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .pessoa-card {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .pessoa-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .pessoa-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .pessoa-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .preview-section {
+            margin-bottom: 20px;
+        }
+
+        .preview-section h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card-preview-item {
+            text-align: center;
+        }
+
+        .card-preview-item canvas {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .card-preview-item p {
+            font-weight: 600;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏆 SUPER BARREIRAS 🏆</h1>
+        <p class="subtitle">Gerador de Cards - Desafios Completos</p>
+        
+        <div class="info">
+            <strong>💡 Dica:</strong> Organize suas fotos com nomes como <code>001.jpg</code>, <code>002.png</code>, etc. O sistema buscará automaticamente a foto correspondente ao prefixo!
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <label>🎨 Símbolo Super Barreiras</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="simboloEmpresa" accept="image/*">
+                    <label for="simboloEmpresa" class="file-input-label">🏢 Upload do Símbolo</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>🎯 Nome do Desafio</label>
+                <input type="text" id="nomeDesafio" placeholder="Ex: Desafio Inovação 2024" value="Desafio Inovação">
+            </div>
+
+            <div class="input-group">
+                <label>💬 Mensagem de Parabéns</label>
+                <textarea id="mensagemParabens" placeholder="Ex: Parabéns pelo incrível trabalho!">🎉 PARABÉNS! 🎉</textarea>
+            </div>
+
+            <div class="input-group">
+                <label>📁 Pasta de Fotos</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="pastaFotos" webkitdirectory directory multiple accept="image/*">
+                    <label for="pastaFotos" class="file-input-label">📸 Selecionar Pasta</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="info" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-left-color: #f59e0b;">
+            <strong>👥 Adicione até 10 pessoas:</strong> Preencha os dados de cada pessoa abaixo. Somente os cards com nome preenchido serão gerados!
+        </div>
+
+        <div class="pessoas-container">
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 1</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="0" placeholder="Ex: João Silva" value="Ana Costa">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="0" placeholder="Ex: Equipe Alpha" value="Equipe Vencedora">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="0" placeholder="Ex: 001" value="001">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 2</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="1" placeholder="Ex: Maria Santos">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="1" placeholder="Ex: Equipe Beta">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="1" placeholder="Ex: 002">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 3</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="2" placeholder="Ex: Pedro Oliveira">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="2" placeholder="Ex: Equipe Gamma">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="2" placeholder="Ex: 003">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 4</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="3" placeholder="Ex: Carla Mendes">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="3" placeholder="Ex: Equipe Delta">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="3" placeholder="Ex: 004">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 5</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="4" placeholder="Ex: Lucas Ferreira">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="4" placeholder="Ex: Equipe Epsilon">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="4" placeholder="Ex: 005">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 6</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="5" placeholder="Ex: Juliana Costa">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="5" placeholder="Ex: Equipe Zeta">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="5" placeholder="Ex: 006">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 7</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="6" placeholder="Ex: Rafael Lima">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="6" placeholder="Ex: Equipe Eta">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="6" placeholder="Ex: 007">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 8</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="7" placeholder="Ex: Beatriz Souza">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="7" placeholder="Ex: Equipe Theta">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="7" placeholder="Ex: 008">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 9</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="8" placeholder="Ex: Gabriel Rocha">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="8" placeholder="Ex: Equipe Iota">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="8" placeholder="Ex: 009">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pessoa-card">
+                <h3>👤 Pessoa 10</h3>
+                <div class="pessoa-inputs">
+                    <div class="input-group">
+                        <label>Nome Completo</label>
+                        <input type="text" class="pessoaNome" data-index="9" placeholder="Ex: Fernanda Dias">
+                    </div>
+                    <div class="input-group">
+                        <label>Nome da Equipe</label>
+                        <input type="text" class="pessoaEquipe" data-index="9" placeholder="Ex: Equipe Kappa">
+                    </div>
+                    <div class="input-group">
+                        <label>Prefixo da Foto</label>
+                        <input type="text" class="pessoaPrefixo" data-index="9" placeholder="Ex: 010">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="themes-section">
+            <h2 class="themes-title">🎨 Escolha o Tema Perfeito</h2>
+            <div class="themes" id="themesContainer"></div>
+        </div>
+
+        <div class="preview-section">
+            <h2>📸 Preview dos Cards</h2>
+            <div class="cards-grid" id="cardsGrid"></div>
+        </div>
+
+        <button class="export-btn" onclick="exportAllCards()">💾 GERAR E BAIXAR TODOS OS CARDS</button>
+    </div>
+
+    <script>
+        const themes = [
+            {
+                name: '🌅 Sunset Dream',
+                bgType: 'gradient',
+                bgColors: ['#ff6b6b', '#ee5a6f', '#f093fb', '#f5576c'],
+                patternType: 'waves',
+                fontFamily: 'Poppins',
+                primaryColor: '#ffffff',
+                secondaryColor: '#ffe5e5',
+                accentColor: '#ff4757',
+                shadowColor: 'rgba(255, 71, 87, 0.4)'
+            },
+            {
+                name: '🌊 Ocean Breeze',
+                bgType: 'gradient',
+                bgColors: ['#00d2ff', '#0984e3', '#00b4db', '#0083b0'],
+                patternType: 'dots',
+                fontFamily: 'Montserrat',
+                primaryColor: '#ffffff',
+                secondaryColor: '#e0f7ff',
+                accentColor: '#0984e3',
+                shadowColor: 'rgba(9, 132, 227, 0.4)'
+            },
+            {
+                name: '🌲 Forest Magic',
+                bgType: 'gradient',
+                bgColors: ['#11998e', '#38ef7d', '#0ba360', '#3cba92'],
+                patternType: 'hexagons',
+                fontFamily: 'Poppins',
+                primaryColor: '#ffffff',
+                secondaryColor: '#e8f8f5',
+                accentColor: '#00b894',
+                shadowColor: 'rgba(0, 184, 148, 0.4)'
+            },
+            {
+                name: '👑 Royal Purple',
+                bgType: 'gradient',
+                bgColors: ['#a855f7', '#7c3aed', '#6366f1', '#8b5cf6'],
+                patternType: 'stars',
+                fontFamily: 'Playfair Display',
+                primaryColor: '#ffffff',
+                secondaryColor: '#f3e8ff',
+                accentColor: '#9333ea',
+                shadowColor: 'rgba(147, 51, 234, 0.4)'
+            },
+            {
+                name: '🔥 Fire Energy',
+                bgType: 'gradient',
+                bgColors: ['#ff4757', '#ff6348', '#ff793f', '#ffb142'],
+                patternType: 'circles',
+                fontFamily: 'Bebas Neue',
+                primaryColor: '#ffffff',
+                secondaryColor: '#fff5f5',
+                accentColor: '#ee5a6f',
+                shadowColor: 'rgba(255, 71, 87, 0.4)'
+            },
+            {
+                name: '🍃 Mint Fresh',
+                bgType: 'gradient',
+                bgColors: ['#06beb6', '#48b1bf', '#00f2c3', '#0098f0'],
+                patternType: 'triangles',
+                fontFamily: 'Montserrat',
+                primaryColor: '#ffffff',
+                secondaryColor: '#e6fffa',
+                accentColor: '#00b894',
+                shadowColor: 'rgba(0, 184, 148, 0.4)'
+            },
+            {
+                name: '🌟 Golden Hour',
+                bgType: 'gradient',
+                bgColors: ['#f2994a', '#f2c94c', '#ffa726', '#ffb74d'],
+                patternType: 'diamonds',
+                fontFamily: 'Righteous',
+                primaryColor: '#ffffff',
+                secondaryColor: '#fff8e1',
+                accentColor: '#f39c12',
+                shadowColor: 'rgba(243, 156, 18, 0.4)'
+            },
+            {
+                name: '🍬 Candy Pop',
+                bgType: 'gradient',
+                bgColors: ['#f78fb3', '#fad0c4', '#ff9a9e', '#fecfef'],
+                patternType: 'bubbles',
+                fontFamily: 'Poppins',
+                primaryColor: '#ffffff',
+                secondaryColor: '#fff0f5',
+                accentColor: '#e55982',
+                shadowColor: 'rgba(229, 89, 130, 0.4)'
+            },
+            {
+                name: '🌌 Cosmic Night',
+                bgType: 'gradient',
+                bgColors: ['#141e30', '#243b55', '#2c3e50', '#34495e'],
+                patternType: 'stars',
+                fontFamily: 'Montserrat',
+                primaryColor: '#ffffff',
+                secondaryColor: '#ecf0f1',
+                accentColor: '#3498db',
+                shadowColor: 'rgba(52, 152, 219, 0.4)'
+            },
+            {
+                name: '🌈 Rainbow Joy',
+                bgType: 'gradient',
+                bgColors: ['#ff0844', '#ffb199', '#ff9068', '#fd3a84'],
+                patternType: 'waves',
+                fontFamily: 'Poppins',
+                primaryColor: '#ffffff',
+                secondaryColor: '#fff5f8',
+                accentColor: '#fd3a84',
+                shadowColor: 'rgba(253, 58, 132, 0.4)'
+            }
+        ];
+
+        let currentTheme = themes[0];
+        let uploadedFiles = [];
+        let simboloEmpresa = null;
+        let pessoas = [];
+        let pessoasFotos = {}; // Armazena as fotos de cada pessoa
+
+        // Criar botões de temas
+        const themesContainer = document.getElementById('themesContainer');
+        themes.forEach((theme, index) => {
+            const btn = document.createElement('div');
+            btn.className = 'theme-btn' + (index === 0 ? ' active' : '');
+            btn.textContent = theme.name;
+            btn.style.background = `linear-gradient(135deg, ${theme.bgColors[0]}, ${theme.bgColors[1]}, ${theme.bgColors[2]})`;
+            btn.onclick = () => selectTheme(theme, btn);
+            themesContainer.appendChild(btn);
+        });
+
+        function selectTheme(theme, btn) {
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentTheme = theme;
+            updateAllPreviews();
+        }
+
+        // Carregar símbolo da empresa
+        document.getElementById('simboloEmpresa').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        simboloEmpresa = img;
+                        updateAllPreviews();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Carregar pasta de fotos
+        document.getElementById('pastaFotos').addEventListener('change', function(e) {
+            uploadedFiles = Array.from(e.target.files);
+            loadAllPhotos();
+        });
+
+        // Event listeners para campos de pessoas
+        document.querySelectorAll('.pessoaNome, .pessoaEquipe, .pessoaPrefixo').forEach(input => {
+            input.addEventListener('input', updateAllPreviews);
+        });
+
+        // Event listeners para campos gerais
+        document.getElementById('nomeDesafio').addEventListener('input', updateAllPreviews);
+        document.getElementById('mensagemParabens').addEventListener('input', updateAllPreviews);
+
+        function loadAllPhotos() {
+            pessoasFotos = {};
+            
+            document.querySelectorAll('.pessoaPrefixo').forEach(input => {
+                const index = input.dataset.index;
+                const prefix = input.value.trim();
+                
+                if (prefix && uploadedFiles.length > 0) {
+                    loadPhotoForPerson(prefix, index);
+                }
+            });
+        }
+
+        function loadPhotoForPerson(prefix, personIndex) {
+            const possibleNames = [
+                `${prefix}.jpg`,
+                `${prefix}.jpeg`,
+                `${prefix}.png`,
+                `${prefix}.JPG`,
+                `${prefix}.JPEG`,
+                `${prefix}.PNG`
+            ];
+
+            const photoFile = uploadedFiles.find(file => 
+                possibleNames.includes(file.name)
+            );
+
+            if (photoFile) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        pessoasFotos[personIndex] = img;
+                        updateAllPreviews();
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(photoFile);
+            } else {
+                pessoasFotos[personIndex] = null;
+                updateAllPreviews();
+            }
+        }
+
+        function getPessoas() {
+            const pessoas = [];
+            
+            for (let i = 0; i < 10; i++) {
+                const nome = document.querySelector(`.pessoaNome[data-index="${i}"]`).value.trim();
+                const equipe = document.querySelector(`.pessoaEquipe[data-index="${i}"]`).value.trim();
+                const prefixo = document.querySelector(`.pessoaPrefixo[data-index="${i}"]`).value.trim();
+                
+                if (nome) { // Só adiciona se tiver nome
+                    pessoas.push({
+                        nome,
+                        equipe: equipe || 'Equipe',
+                        prefixo,
+                        foto: pessoasFotos[i] || null
+                    });
+                }
+            }
+            
+            return pessoas;
+        }
+
+        function updateAllPreviews() {
+            const pessoas = getPessoas();
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            if (pessoas.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1/-1;">Preencha pelo menos um nome para ver o preview</p>';
+                return;
+            }
+
+            pessoas.forEach((pessoa, index) => {
+                const container = document.createElement('div');
+                container.className = 'card-preview-item';
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = 700;
+                canvas.height = 1000;
+                canvas.id = `canvas-${index}`;
+                
+                const label = document.createElement('p');
+                label.textContent = pessoa.nome;
+                
+                container.appendChild(canvas);
+                container.appendChild(label);
+                grid.appendChild(container);
+                
+                drawCard(canvas, pessoa);
+            });
+        }
+
+        function drawCard(canvas, pessoa) {
+            const ctx = canvas.getContext('2d');
+
+            // Limpar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Desenhar fundo com gradiente
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, currentTheme.bgColors[0]);
+            gradient.addColorStop(0.33, currentTheme.bgColors[1]);
+            gradient.addColorStop(0.66, currentTheme.bgColors[2]);
+            gradient.addColorStop(1, currentTheme.bgColors[3] || currentTheme.bgColors[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Adicionar padrão decorativo baseado no tema
+            drawPattern(ctx, currentTheme.patternType);
+
+            // Símbolo da Super Barreiras no canto superior esquerdo
+            if (simboloEmpresa) {
+                const logoSize = 120;
+                const logoX = 50;
+                const logoY = 50;
+                
+                ctx.save();
+                ctx.shadowColor = currentTheme.shadowColor;
+                ctx.shadowBlur = 20;
+                ctx.shadowOffsetY = 5;
+                
+                const aspectRatio = simboloEmpresa.width / simboloEmpresa.height;
+                let drawWidth = logoSize;
+                let drawHeight = logoSize;
+                
+                if (aspectRatio > 1) {
+                    drawHeight = logoSize / aspectRatio;
+                } else {
+                    drawWidth = logoSize * aspectRatio;
+                }
+                
+                ctx.drawImage(
+                    simboloEmpresa,
+                    logoX,
+                    logoY,
+                    drawWidth,
+                    drawHeight
+                );
+                ctx.restore();
+            }
+
+            // Selo "Desafio Completo" no canto superior direito
+            const sealSize = 140;
+            const sealX = canvas.width - sealSize / 2 - 40;
+            const sealY = sealSize / 2 + 40;
+
+            ctx.save();
+            ctx.shadowColor = currentTheme.shadowColor;
+            ctx.shadowBlur = 30;
+            ctx.shadowOffsetY = 10;
+
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.beginPath();
+            ctx.arc(sealX, sealY, sealSize / 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+
+            ctx.fillStyle = currentTheme.accentColor;
+            ctx.beginPath();
+            ctx.arc(sealX, sealY, sealSize / 2 - 10, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.beginPath();
+            ctx.arc(sealX, sealY, sealSize / 2 - 20, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.font = 'bold 45px Arial';
+            ctx.fillStyle = currentTheme.accentColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('✓', sealX, sealY - 12);
+
+            ctx.font = `700 16px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.accentColor;
+            ctx.fillText('DESAFIO', sealX, sealY + 18);
+            ctx.fillText('COMPLETO', sealX, sealY + 36);
+
+            ctx.restore();
+
+            // Foto da pessoa (CENTRALIZADA)
+            const photoSize = 350;
+            const photoY = canvas.height / 2;
+
+            if (pessoa.foto) {
+                ctx.save();
+                
+                ctx.shadowColor = currentTheme.shadowColor;
+                ctx.shadowBlur = 40;
+                ctx.shadowOffsetY = 15;
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, photoY, photoSize / 2 + 12, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetY = 0;
+
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, photoY, photoSize / 2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+
+                const scale = Math.max(photoSize / pessoa.foto.width, photoSize / pessoa.foto.height);
+                const scaledWidth = pessoa.foto.width * scale;
+                const scaledHeight = pessoa.foto.height * scale;
+                
+                ctx.drawImage(
+                    pessoa.foto,
+                    canvas.width / 2 - scaledWidth / 2,
+                    photoY - scaledHeight / 2,
+                    scaledWidth,
+                    scaledHeight
+                );
+                ctx.restore();
+
+                ctx.strokeStyle = currentTheme.accentColor;
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, photoY, photoSize / 2, 0, Math.PI * 2);
+                ctx.stroke();
+            } else {
+                ctx.save();
+                ctx.shadowColor = currentTheme.shadowColor;
+                ctx.shadowBlur = 40;
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, photoY, photoSize / 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                ctx.font = 'bold 100px Arial';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('📷', canvas.width / 2, photoY);
+            }
+
+            // Nome da pessoa
+            ctx.font = `900 58px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 5;
+            ctx.fillText(pessoa.nome, canvas.width / 2, photoY + photoSize / 2 + 80);
+
+            // Linha decorativa
+            ctx.shadowBlur = 10;
+            ctx.strokeStyle = currentTheme.secondaryColor;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            drawWavyLine(ctx, canvas.width / 2 - 150, photoY + photoSize / 2 + 120, canvas.width / 2 + 150, photoY + photoSize / 2 + 120);
+
+            // Nome do Desafio
+            ctx.shadowBlur = 15;
+            ctx.font = `700 42px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.secondaryColor;
+            const nomeDesafio = document.getElementById('nomeDesafio').value || 'Nome do Desafio';
+            ctx.fillText(nomeDesafio, canvas.width / 2, photoY + photoSize / 2 + 180);
+
+            // Nome da Equipe
+            ctx.font = `600 36px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.fillText(pessoa.equipe, canvas.width / 2, photoY + photoSize / 2 + 230);
+
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+
+            // Mensagem de parabéns
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 15;
+            ctx.font = `700 38px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.primaryColor;
+            const mensagem = document.getElementById('mensagemParabens').value || '🎉 PARABÉNS! 🎉';
+            ctx.fillText(mensagem, canvas.width / 2, 80);
+        }
+
+        function drawPattern(ctx, type) {
+            ctx.globalAlpha = 0.08;
+            ctx.fillStyle = '#ffffff';
+
+            switch(type) {
+                case 'waves':
+                    for (let i = 0; i < 8; i++) {
+                        ctx.beginPath();
+                        for (let x = 0; x <= ctx.canvas.width; x += 20) {
+                            const y = Math.sin((x + i * 100) * 0.01) * 30 + i * 130;
+                            if (x === 0) ctx.moveTo(x, y);
+                            else ctx.lineTo(x, y);
+                        }
+                        ctx.stroke();
+                    }
+                    break;
+                case 'dots':
+                    for (let i = 0; i < 100; i++) {
+                        ctx.beginPath();
+                        ctx.arc(
+                            Math.random() * ctx.canvas.width,
+                            Math.random() * ctx.canvas.height,
+                            Math.random() * 5 + 2,
+                            0, Math.PI * 2
+                        );
+                        ctx.fill();
+                    }
+                    break;
+                case 'hexagons':
+                case 'stars':
+                    for (let i = 0; i < 30; i++) {
+                        const x = Math.random() * ctx.canvas.width;
+                        const y = Math.random() * ctx.canvas.height;
+                        const size = Math.random() * 20 + 10;
+                        drawStar(ctx, x, y, 5, size, size / 2);
+                    }
+                    break;
+                case 'circles':
+                    for (let i = 0; i < 40; i++) {
+                        ctx.beginPath();
+                        ctx.arc(
+                            Math.random() * ctx.canvas.width,
+                            Math.random() * ctx.canvas.height,
+                            Math.random() * 40 + 20,
+                            0, Math.PI * 2
+                        );
+                        ctx.stroke();
+                    }
+                    break;
+                case 'triangles':
+                case 'diamonds':
+                    for (let i = 0; i < 30; i++) {
+                        const x = Math.random() * ctx.canvas.width;
+                        const y = Math.random() * ctx.canvas.height;
+                        const size = Math.random() * 30 + 20;
+                        ctx.beginPath();
+                        ctx.moveTo(x, y - size);
+                        ctx.lineTo(x + size, y + size);
+                        ctx.lineTo(x - size, y + size);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                    break;
+                case 'bubbles':
+                    for (let i = 0; i < 50; i++) {
+                        ctx.beginPath();
+                        ctx.arc(
+                            Math.random() * ctx.canvas.width,
+                            Math.random() * ctx.canvas.height,
+                            Math.random() * 30 + 10,
+                            0, Math.PI * 2
+                        );
+                        ctx.fill();
+                    }
+                    break;
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            const step = Math.PI / spikes;
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - outerRadius);
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+            }
+            ctx.lineTo(cx, cy - outerRadius);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawWavyLine(ctx, x1, y1, x2, y2) {
+            const segments = 20;
+            const amplitude = 5;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            for (let i = 0; i <= segments; i++) {
+                const x = x1 + (x2 - x1) * (i / segments);
+                const y = y1 + Math.sin(i * 0.5) * amplitude;
+                ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        }
+
+        function exportCard() {
+            const canvas = document.getElementById('cardCanvas');
+            const nomeColega = document.getElementById('nomeColega').value || 'card';
+            const fileName = `card_${nomeColega.replace(/\s+/g, '_')}_${Date.now()}.png`;
+            
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png', 1.0);
+        }
+
+        function exportAllCards() {
+            const pessoas = getPessoas();
+            
+            if (pessoas.length === 0) {
+                alert('Adicione pelo menos uma pessoa para gerar os cards!');
+                return;
+            }
+
+            pessoas.forEach((pessoa, index) => {
+                const canvas = document.getElementById(`canvas-${index}`);
+                
+                setTimeout(() => {
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `card_${pessoa.nome.replace(/\s+/g, '_')}.png`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 'image/png', 1.0);
+                }, index * 300); // Delay entre downloads
+            });
+        }
+
+        // Desenhar previews iniciais
+        updateAllPreviews();
+    </script>
+</body>
+</html>
