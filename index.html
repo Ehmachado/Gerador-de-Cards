@@ -380,6 +380,23 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
+
+        .action-btn {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .clear-btn:hover {
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+        }
+
+        .refresh-btn:hover {
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -435,6 +452,15 @@
 
         <div class="info" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-left-color: #f59e0b;">
             <strong>👥 Adicione até 10 pessoas:</strong> Preencha os dados de cada pessoa abaixo. Somente os cards com nome preenchido serão gerados!
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="limparCampos()" class="action-btn clear-btn" style="padding: 12px 30px; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.3s;">
+                🗑️ LIMPAR TODOS OS CAMPOS
+            </button>
+            <button onclick="atualizarPreviews()" class="action-btn refresh-btn" style="padding: 12px 30px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 16px; transition: all 0.3s;">
+                🔄 ATUALIZAR PREVIEWS
+            </button>
         </div>
 
         <div class="pessoas-container">
@@ -1440,6 +1466,52 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             }, 'image/png', 1.0);
+        }
+
+        function limparCampos() {
+            if (!confirm('⚠️ Deseja realmente limpar todos os campos de pessoas? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+
+            // Limpar todos os campos de pessoas
+            for (let i = 0; i < 10; i++) {
+                const inputNome = document.querySelector(`.pessoaNome[data-index="${i}"]`);
+                const inputEquipe = document.querySelector(`.pessoaEquipe[data-index="${i}"]`);
+                const inputPrefixo = document.querySelector(`.pessoaPrefixo[data-index="${i}"]`);
+                
+                if (inputNome) inputNome.value = '';
+                if (inputEquipe) inputEquipe.value = '';
+                if (inputPrefixo) inputPrefixo.value = '';
+            }
+
+            // Limpar também a área de tabela
+            document.getElementById('tabelaDados').value = '';
+
+            // Limpar fotos carregadas das pessoas
+            pessoasFotos = {};
+
+            // Atualizar previews
+            updateAllPreviews();
+
+            alert('✅ Todos os campos foram limpos com sucesso!');
+        }
+
+        function atualizarPreviews() {
+            // Recarregar todas as fotos baseado nos prefixos atuais
+            for (let i = 0; i < 10; i++) {
+                const inputPrefixo = document.querySelector(`.pessoaPrefixo[data-index="${i}"]`);
+                const prefix = inputPrefixo ? inputPrefixo.value.trim() : '';
+                
+                if (prefix && uploadedFiles.length > 0) {
+                    loadPhotoForPerson(prefix, i);
+                }
+            }
+
+            // Atualizar todos os previews
+            setTimeout(() => {
+                updateAllPreviews();
+                alert('✅ Previews atualizados com sucesso!');
+            }, 500);
         }
 
         // Desenhar previews iniciais
