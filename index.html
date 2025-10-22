@@ -230,6 +230,69 @@
             color: #0c4a6e;
         }
 
+        .tabela-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .tabela-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .galeria-section {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 20px;
+            border: 3px solid #f59e0b;
+        }
+
+        .galeria-section h2 {
+            text-align: center;
+            color: #92400e;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .galeria-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .galeria-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .galeria-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        #galeriaCanvas {
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         .pessoas-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -307,6 +370,20 @@
         
         <div class="info">
             <strong>💡 Dica:</strong> Organize suas fotos com nomes como <code>001.jpg</code>, <code>002.png</code>, etc. O sistema buscará automaticamente a foto correspondente ao prefixo!
+        </div>
+
+        <div class="tabela-section">
+            <h3 style="color: #667eea; margin-bottom: 15px;">📊 Importação Rápida de Dados</h3>
+            <div class="info" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-left-color: #10b981;">
+                <strong>✨ Cole sua tabela aqui!</strong> Formato: <code>Prefixo | Dependência | Nome do Gerente Geral</code> (separado por Tab ou vírgula)
+            </div>
+            <textarea id="tabelaDados" placeholder="Exemplo:
+001	Loja Centro	João Silva Santos
+002	Loja Norte	Maria Oliveira Costa
+003	Loja Sul	Pedro Henrique Lima" style="width: 100%; min-height: 150px; padding: 15px; border: 2px solid #e5e7eb; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 14px; margin-bottom: 15px;"></textarea>
+            <button onclick="processarTabela()" style="padding: 12px 30px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 16px;">
+                📥 IMPORTAR DADOS DA TABELA
+            </button>
         </div>
 
         <div class="controls">
@@ -534,6 +611,21 @@
         </div>
 
         <button class="export-btn" onclick="exportAllCards()">💾 GERAR E BAIXAR TODOS OS CARDS</button>
+
+        <div class="galeria-section">
+            <h2>🏆 GALERIA DOS CAMPEÕES 🏆</h2>
+            <div class="info" style="background: rgba(255,255,255,0.8); border-left-color: #f59e0b;">
+                <strong>🎨 Crie uma galeria especial!</strong> Junte todos os cards em uma única imagem para compartilhar ou imprimir.
+            </div>
+            <div class="galeria-buttons">
+                <button class="galeria-btn" onclick="gerarGaleria(2)">📱 Galeria 2 Colunas</button>
+                <button class="galeria-btn" onclick="gerarGaleria(3)">🖼️ Galeria 3 Colunas</button>
+                <button class="galeria-btn" onclick="gerarGaleria(4)">🎬 Galeria 4 Colunas</button>
+                <button class="galeria-btn" onclick="gerarGaleria(5)">🌟 Galeria 5 Colunas</button>
+                <button class="galeria-btn" onclick="exportarGaleria()">💾 Baixar Galeria</button>
+            </div>
+            <canvas id="galeriaCanvas"></canvas>
+        </div>
     </div>
 
     <script>
@@ -1148,6 +1240,158 @@
                     }, 'image/png', 1.0);
                 }, index * 300); // Delay entre downloads
             });
+        }
+
+        function processarTabela() {
+            const texto = document.getElementById('tabelaDados').value.trim();
+            
+            if (!texto) {
+                alert('Cole os dados da tabela primeiro!');
+                return;
+            }
+
+            // Dividir em linhas
+            const linhas = texto.split('\n').filter(linha => linha.trim());
+            
+            linhas.forEach((linha, index) => {
+                if (index >= 10) return; // Máximo 10 pessoas
+                
+                // Tentar separar por tab ou vírgula
+                let partes = linha.split('\t');
+                if (partes.length < 3) {
+                    partes = linha.split(',');
+                }
+                
+                if (partes.length >= 3) {
+                    const prefixo = partes[0].trim();
+                    const dependencia = partes[1].trim();
+                    const nomeCompleto = partes[2].trim();
+                    
+                    // Extrair primeiro nome
+                    const primeiroNome = nomeCompleto.split(' ')[0];
+                    
+                    // Preencher os campos
+                    const inputNome = document.querySelector(`.pessoaNome[data-index="${index}"]`);
+                    const inputEquipe = document.querySelector(`.pessoaEquipe[data-index="${index}"]`);
+                    const inputPrefixo = document.querySelector(`.pessoaPrefixo[data-index="${index}"]`);
+                    
+                    if (inputNome && inputEquipe && inputPrefixo) {
+                        inputNome.value = primeiroNome;
+                        inputEquipe.value = dependencia;
+                        inputPrefixo.value = prefixo;
+                        
+                        // Carregar foto correspondente
+                        if (uploadedFiles.length > 0) {
+                            loadPhotoForPerson(prefixo, index);
+                        }
+                    }
+                }
+            });
+            
+            // Atualizar previews
+            updateAllPreviews();
+            
+            alert(`✅ ${Math.min(linhas.length, 10)} pessoa(s) importada(s) com sucesso!`);
+        }
+
+        function gerarGaleria(colunas) {
+            const pessoas = getPessoas();
+            
+            if (pessoas.length === 0) {
+                alert('Adicione pelo menos uma pessoa para gerar a galeria!');
+                return;
+            }
+
+            const galeriaCanvas = document.getElementById('galeriaCanvas');
+            const cardWidth = 700;
+            const cardHeight = 1000;
+            const spacing = 30; // Espaçamento entre cards
+            const margin = 50; // Margem externa
+            
+            const linhas = Math.ceil(pessoas.length / colunas);
+            
+            // Calcular dimensões da galeria
+            galeriaCanvas.width = (cardWidth * colunas) + (spacing * (colunas - 1)) + (margin * 2);
+            galeriaCanvas.height = (cardHeight * linhas) + (spacing * (linhas - 1)) + (margin * 2);
+            
+            const ctx = galeriaCanvas.getContext('2d');
+            
+            // Fundo da galeria com gradiente
+            const gradient = ctx.createLinearGradient(0, 0, galeriaCanvas.width, galeriaCanvas.height);
+            gradient.addColorStop(0, currentTheme.bgColors[0]);
+            gradient.addColorStop(0.5, currentTheme.bgColors[1]);
+            gradient.addColorStop(1, currentTheme.bgColors[2]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, galeriaCanvas.width, galeriaCanvas.height);
+            
+            // Adicionar padrão decorativo suave
+            ctx.globalAlpha = 0.05;
+            drawPattern(ctx, currentTheme.patternType);
+            ctx.globalAlpha = 1;
+            
+            // Título da galeria
+            ctx.font = 'bold 80px Poppins';
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 30;
+            ctx.shadowOffsetY = 10;
+            ctx.fillText('🏆 SUPER BARREIRAS - CAMPEÕES 🏆', galeriaCanvas.width / 2, 100);
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Desenhar cada card na galeria
+            pessoas.forEach((pessoa, index) => {
+                const col = index % colunas;
+                const row = Math.floor(index / colunas);
+                
+                const x = margin + (col * (cardWidth + spacing));
+                const y = margin + 150 + (row * (cardHeight + spacing)); // 150 para dar espaço ao título
+                
+                // Pegar canvas individual
+                const sourceCanvas = document.getElementById(`canvas-${index}`);
+                if (sourceCanvas) {
+                    // Sombra do card
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                    ctx.shadowBlur = 40;
+                    ctx.shadowOffsetY = 20;
+                    
+                    // Desenhar card
+                    ctx.drawImage(sourceCanvas, x, y, cardWidth, cardHeight);
+                    
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetY = 0;
+                }
+            });
+            
+            // Rodapé
+            const nomeDesafio = document.getElementById('nomeDesafio').value || 'Desafio';
+            ctx.font = 'bold 50px Poppins';
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 20;
+            ctx.fillText(nomeDesafio, galeriaCanvas.width / 2, galeriaCanvas.height - 50);
+        }
+
+        function exportarGaleria() {
+            const galeriaCanvas = document.getElementById('galeriaCanvas');
+            
+            if (!galeriaCanvas.width || galeriaCanvas.width === 0) {
+                alert('Gere a galeria primeiro clicando em um dos botões acima!');
+                return;
+            }
+            
+            galeriaCanvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `galeria_campeoes_${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png', 1.0);
         }
 
         // Desenhar previews iniciais
