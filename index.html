@@ -823,18 +823,24 @@
         function getPessoas() {
             const pessoas = [];
             
-            for (let i = 0; i < 10; i++) {
-                const nome = document.querySelector(`.pessoaNome[data-index="${i}"]`).value.trim();
-                const equipe = document.querySelector(`.pessoaEquipe[data-index="${i}"]`).value.trim();
-                const prefixo = document.querySelector(`.pessoaPrefixo[data-index="${i}"]`).value.trim();
+            for (let i = 0; i < 59; i++) {
+                const nomeInput = document.querySelector(`.pessoaNome[data-index="${i}"]`);
+                const equipeInput = document.querySelector(`.pessoaEquipe[data-index="${i}"]`);
+                const prefixoInput = document.querySelector(`.pessoaPrefixo[data-index="${i}"]`);
                 
-                if (nome) { // Só adiciona se tiver nome
-                    pessoas.push({
-                        nome,
-                        equipe: equipe || 'Equipe',
-                        prefixo,
-                        foto: pessoasFotos[i] || null
-                    });
+                if (nomeInput && equipeInput && prefixoInput) {
+                    const nome = nomeInput.value.trim();
+                    const equipe = equipeInput.value.trim();
+                    const prefixo = prefixoInput.value.trim();
+                    
+                    if (nome) { // Só adiciona se tiver nome
+                        pessoas.push({
+                            nome,
+                            equipe: equipe || 'Equipe',
+                            prefixo,
+                            foto: pessoasFotos[i] || null
+                        });
+                    }
                 }
             }
             
