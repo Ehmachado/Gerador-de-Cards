@@ -293,6 +293,49 @@
             margin: 0 auto;
         }
 
+        .galeria-item {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .galeria-item h3 {
+            text-align: center;
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .galeria-item canvas {
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        .galeria-download-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .galeria-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+        }
+
         .pessoas-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -397,6 +440,50 @@
         .refresh-btn:hover {
             box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
         }
+
+        .galeria-item {
+            margin-bottom: 50px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .galeria-item h3 {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .galeria-item canvas {
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+
+        .galeria-download-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .galeria-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -451,7 +538,7 @@
         </div>
 
         <div class="info" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-left-color: #f59e0b;">
-            <strong>👥 Adicione até 10 pessoas:</strong> Preencha os dados de cada pessoa abaixo. Somente os cards com nome preenchido serão gerados!
+            <strong>👥 Adicione até 59 pessoas:</strong> Preencha os dados de cada pessoa abaixo. Somente os cards com nome preenchido serão gerados!
         </div>
 
         <div style="display: flex; gap: 15px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap;">
@@ -463,187 +550,34 @@
             </button>
         </div>
 
-        <div class="pessoas-container">
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 1</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="0" placeholder="Ex: João Silva" value="Ana Costa">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="0" placeholder="Ex: Equipe Alpha" value="Equipe Vencedora">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="0" placeholder="Ex: 001" value="001">
-                    </div>
-                </div>
-            </div>
+        <div class="pessoas-container" id="pessoasContainer"></div>
 
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 2</h3>
+        <script>
+        // Gerar os 59 campos de pessoas dinamicamente
+        const pessoasContainer = document.getElementById('pessoasContainer');
+        for (let i = 0; i < 59; i++) {
+            const pessoaCard = document.createElement('div');
+            pessoaCard.className = 'pessoa-card';
+            pessoaCard.innerHTML = `
+                <h3>👤 Pessoa ${i + 1}</h3>
                 <div class="pessoa-inputs">
                     <div class="input-group">
                         <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="1" placeholder="Ex: Maria Santos">
+                        <input type="text" class="pessoaNome" data-index="${i}" placeholder="Ex: João Silva"${i === 0 ? ' value="Ana Costa"' : ''}>
                     </div>
                     <div class="input-group">
                         <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="1" placeholder="Ex: Equipe Beta">
+                        <input type="text" class="pessoaEquipe" data-index="${i}" placeholder="Ex: Equipe Alpha"${i === 0 ? ' value="Equipe Vencedora"' : ''}>
                     </div>
                     <div class="input-group">
                         <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="1" placeholder="Ex: 002">
+                        <input type="text" class="pessoaPrefixo" data-index="${i}" placeholder="Ex: ${String(i + 1).padStart(3, '0')}"${i === 0 ? ' value="001"' : ''}>
                     </div>
                 </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 3</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="2" placeholder="Ex: Pedro Oliveira">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="2" placeholder="Ex: Equipe Gamma">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="2" placeholder="Ex: 003">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 4</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="3" placeholder="Ex: Carla Mendes">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="3" placeholder="Ex: Equipe Delta">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="3" placeholder="Ex: 004">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 5</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="4" placeholder="Ex: Lucas Ferreira">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="4" placeholder="Ex: Equipe Epsilon">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="4" placeholder="Ex: 005">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 6</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="5" placeholder="Ex: Juliana Costa">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="5" placeholder="Ex: Equipe Zeta">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="5" placeholder="Ex: 006">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 7</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="6" placeholder="Ex: Rafael Lima">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="6" placeholder="Ex: Equipe Eta">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="6" placeholder="Ex: 007">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 8</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="7" placeholder="Ex: Beatriz Souza">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="7" placeholder="Ex: Equipe Theta">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="7" placeholder="Ex: 008">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 9</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="8" placeholder="Ex: Gabriel Rocha">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="8" placeholder="Ex: Equipe Iota">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="8" placeholder="Ex: 009">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pessoa-card">
-                <h3>👤 Pessoa 10</h3>
-                <div class="pessoa-inputs">
-                    <div class="input-group">
-                        <label>Nome Completo</label>
-                        <input type="text" class="pessoaNome" data-index="9" placeholder="Ex: Fernanda Dias">
-                    </div>
-                    <div class="input-group">
-                        <label>Nome da Equipe</label>
-                        <input type="text" class="pessoaEquipe" data-index="9" placeholder="Ex: Equipe Kappa">
-                    </div>
-                    <div class="input-group">
-                        <label>Prefixo da Foto</label>
-                        <input type="text" class="pessoaPrefixo" data-index="9" placeholder="Ex: 010">
-                    </div>
-                </div>
-            </div>
-        </div>
+            `;
+            pessoasContainer.appendChild(pessoaCard);
+        }
+        </script>
 
         <div class="themes-section">
             <h2 class="themes-title">🎨 Escolha o Tema Perfeito</h2>
@@ -660,16 +594,15 @@
         <div class="galeria-section">
             <h2>🏆 GALERIA DOS CAMPEÕES 🏆</h2>
             <div class="info" style="background: rgba(255,255,255,0.8); border-left-color: #f59e0b;">
-                <strong>🎨 Crie uma galeria especial!</strong> Junte todos os cards em uma única imagem para compartilhar ou imprimir.
+                <strong>🎨 Crie galerias especiais!</strong> As galerias são agrupadas automaticamente de 10 em 10 cards. Escolha o layout e baixe cada galeria individualmente.
             </div>
             <div class="galeria-buttons">
-                <button class="galeria-btn" onclick="gerarGaleria(2)">📱 Galeria 2 Colunas</button>
-                <button class="galeria-btn" onclick="gerarGaleria(3)">🖼️ Galeria 3 Colunas</button>
-                <button class="galeria-btn" onclick="gerarGaleria(4)">🎬 Galeria 4 Colunas</button>
-                <button class="galeria-btn" onclick="gerarGaleria(5)">🌟 Galeria 5 Colunas</button>
-                <button class="galeria-btn" onclick="exportarGaleria()">💾 Baixar Galeria</button>
+                <button class="galeria-btn" onclick="gerarTodasGalerias(2)">📱 Galerias 2 Colunas</button>
+                <button class="galeria-btn" onclick="gerarTodasGalerias(3)">🖼️ Galerias 3 Colunas</button>
+                <button class="galeria-btn" onclick="gerarTodasGalerias(4)">🎬 Galerias 4 Colunas</button>
+                <button class="galeria-btn" onclick="gerarTodasGalerias(5)">🌟 Galerias 5 Colunas</button>
             </div>
-            <canvas id="galeriaCanvas"></canvas>
+            <div id="galeriasContainer"></div>
         </div>
     </div>
 
@@ -1317,7 +1250,7 @@
             const linhas = texto.split('\n').filter(linha => linha.trim());
             
             linhas.forEach((linha, index) => {
-                if (index >= 10) return; // Máximo 10 pessoas
+                if (index >= 59) return; // Máximo 59 pessoas
                 
                 // Tentar separar por tab ou vírgula
                 let partes = linha.split('\t');
@@ -1356,7 +1289,7 @@
                 updateAllPreviews();
             }, 500);
             
-            alert(`✅ ${Math.min(linhas.length, 10)} pessoa(s) importada(s) com sucesso!`);
+            alert(`✅ ${Math.min(linhas.length, 59)} pessoa(s) importada(s) com sucesso!`);
         }
 
         function gerarGaleria(colunas) {
@@ -1465,33 +1398,13 @@
             galeriaCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function exportarGaleria() {
-            const galeriaCanvas = document.getElementById('galeriaCanvas');
-            
-            if (!galeriaCanvas.width || galeriaCanvas.width === 0) {
-                alert('Gere a galeria primeiro clicando em um dos botões acima!');
-                return;
-            }
-            
-            galeriaCanvas.toBlob(function(blob) {
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `galeria_super_barreiras_${Date.now()}.png`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }, 'image/png', 1.0);
-        }
-
         function limparCampos() {
             if (!confirm('⚠️ Deseja realmente limpar todos os campos de pessoas? Esta ação não pode ser desfeita.')) {
                 return;
             }
 
-            // Limpar todos os campos de pessoas
-            for (let i = 0; i < 10; i++) {
+            // Limpar todos os campos de pessoas (agora são 59)
+            for (let i = 0; i < 59; i++) {
                 const inputNome = document.querySelector(`.pessoaNome[data-index="${i}"]`);
                 const inputEquipe = document.querySelector(`.pessoaEquipe[data-index="${i}"]`);
                 const inputPrefixo = document.querySelector(`.pessoaPrefixo[data-index="${i}"]`);
@@ -1514,8 +1427,8 @@
         }
 
         function atualizarPreviews() {
-            // Recarregar todas as fotos baseado nos prefixos atuais
-            for (let i = 0; i < 10; i++) {
+            // Recarregar todas as fotos baseado nos prefixos atuais (59 pessoas)
+            for (let i = 0; i < 59; i++) {
                 const inputPrefixo = document.querySelector(`.pessoaPrefixo[data-index="${i}"]`);
                 const prefix = inputPrefixo ? inputPrefixo.value.trim() : '';
                 
@@ -1531,8 +1444,238 @@
             }, 500);
         }
 
+        function processarTabela() {
+            const texto = document.getElementById('tabelaDados').value.trim();
+            
+            if (!texto) {
+                alert('Cole os dados da tabela primeiro!');
+                return;
+            }
+
+            // Dividir em linhas
+            const linhas = texto.split('\n').filter(linha => linha.trim());
+            
+            linhas.forEach((linha, index) => {
+                if (index >= 59) return; // Máximo 59 pessoas agora
+                
+                // Tentar separar por tab ou vírgula
+                let partes = linha.split('\t');
+                if (partes.length < 3) {
+                    partes = linha.split(',');
+                }
+                
+                if (partes.length >= 3) {
+                    const prefixo = partes[0].trim();
+                    const dependencia = partes[1].trim();
+                    const nomeCompleto = partes[2].trim();
+                    
+                    // Extrair primeiro nome
+                    const primeiroNome = nomeCompleto.split(' ')[0];
+                    
+                    // Preencher os campos
+                    const inputNome = document.querySelector(`.pessoaNome[data-index="${index}"]`);
+                    const inputEquipe = document.querySelector(`.pessoaEquipe[data-index="${index}"]`);
+                    const inputPrefixo = document.querySelector(`.pessoaPrefixo[data-index="${index}"]`);
+                    
+                    if (inputNome && inputEquipe && inputPrefixo) {
+                        inputNome.value = primeiroNome;
+                        inputEquipe.value = dependencia;
+                        inputPrefixo.value = prefixo;
+                        
+                        // Carregar foto correspondente
+                        if (uploadedFiles.length > 0) {
+                            loadPhotoForPerson(prefixo, index);
+                        }
+                    }
+                }
+            });
+            
+            // Atualizar previews após um pequeno delay para garantir que as fotos foram carregadas
+            setTimeout(() => {
+                updateAllPreviews();
+            }, 500);
+            
+            alert(`✅ ${Math.min(linhas.length, 59)} pessoa(s) importada(s) com sucesso!`);
+        }
+
+        function gerarTodasGalerias(colunas) {
+            const pessoas = getPessoas();
+            
+            if (pessoas.length === 0) {
+                alert('Adicione pelo menos uma pessoa para gerar as galerias!');
+                return;
+            }
+
+            const galeriasContainer = document.getElementById('galeriasContainer');
+            galeriasContainer.innerHTML = '';
+
+            // Dividir pessoas em grupos de 10
+            const grupos = [];
+            for (let i = 0; i < pessoas.length; i += 10) {
+                grupos.push(pessoas.slice(i, i + 10));
+            }
+
+            // Gerar uma galeria para cada grupo
+            grupos.forEach((grupo, grupoIndex) => {
+                const galeriaItem = document.createElement('div');
+                galeriaItem.className = 'galeria-item';
+                
+                const titulo = document.createElement('h3');
+                titulo.textContent = `🏆 Galeria ${grupoIndex + 1} - Campeões ${grupoIndex * 10 + 1} a ${grupoIndex * 10 + grupo.length}`;
+                
+                const canvas = document.createElement('canvas');
+                canvas.id = `galeria-${grupoIndex}`;
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.className = 'galeria-download-btn';
+                downloadBtn.textContent = `💾 Baixar Galeria ${grupoIndex + 1}`;
+                downloadBtn.onclick = () => exportarGaleriaIndividual(grupoIndex);
+                
+                galeriaItem.appendChild(titulo);
+                galeriaItem.appendChild(canvas);
+                galeriaItem.appendChild(downloadBtn);
+                galeriasContainer.appendChild(galeriaItem);
+                
+                // Gerar a galeria
+                gerarGaleriaGrupo(canvas, grupo, colunas, grupoIndex);
+            });
+
+            // Scroll para as galerias
+            galeriasContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function gerarGaleriaGrupo(canvas, grupo, colunas, grupoIndex) {
+            const cardWidth = 350;
+            const cardHeight = 500;
+            const spacing = 20;
+            const margin = 60;
+            const tituloHeight = 150;
+            const rodapeHeight = 100;
+            
+            const linhas = Math.ceil(grupo.length / colunas);
+            
+            // Calcular dimensões da galeria
+            canvas.width = (cardWidth * colunas) + (spacing * (colunas - 1)) + (margin * 2);
+            canvas.height = tituloHeight + (cardHeight * linhas) + (spacing * (linhas - 1)) + margin + rodapeHeight;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // Fundo da galeria com gradiente DO TEMA SELECIONADO
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, currentTheme.bgColors[0]);
+            gradient.addColorStop(0.33, currentTheme.bgColors[1]);
+            gradient.addColorStop(0.66, currentTheme.bgColors[2]);
+            gradient.addColorStop(1, currentTheme.bgColors[3] || currentTheme.bgColors[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Adicionar padrão decorativo do tema
+            ctx.save();
+            ctx.globalAlpha = 0.06;
+            drawPattern(ctx, currentTheme.patternType);
+            ctx.globalAlpha = 1;
+            ctx.restore();
+            
+            // Título da galeria com fonte e cor do tema
+            ctx.font = `bold 60px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.textAlign = 'center';
+            ctx.shadowColor = currentTheme.shadowColor;
+            ctx.shadowBlur = 30;
+            ctx.shadowOffsetY = 10;
+            ctx.fillText('🏆 SUPER BARREIRAS 🏆', canvas.width / 2, 70);
+            
+            ctx.font = `bold 40px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.secondaryColor;
+            ctx.fillText('CAMPEÕES', canvas.width / 2, 120);
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Desenhar cada card na galeria
+            grupo.forEach((pessoa, index) => {
+                const col = index % colunas;
+                const row = Math.floor(index / colunas);
+                
+                const x = margin + (col * (cardWidth + spacing));
+                const y = tituloHeight + (row * (cardHeight + spacing));
+                
+                // Calcular índice global da pessoa
+                const globalIndex = grupoIndex * 10 + index;
+                
+                // Pegar canvas individual
+                const sourceCanvas = document.getElementById(`canvas-${globalIndex}`);
+                if (sourceCanvas) {
+                    // Sombra do card com cor do tema
+                    ctx.shadowColor = currentTheme.shadowColor;
+                    ctx.shadowBlur = 30;
+                    ctx.shadowOffsetX = 5;
+                    ctx.shadowOffsetY = 15;
+                    
+                    // Moldura colorida ao redor de cada card
+                    ctx.strokeStyle = currentTheme.accentColor;
+                    ctx.lineWidth = 4;
+                    ctx.strokeRect(x - 2, y - 2, cardWidth + 4, cardHeight + 4);
+                    
+                    // Desenhar card redimensionado
+                    ctx.drawImage(sourceCanvas, x, y, cardWidth, cardHeight);
+                    
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                }
+            });
+            
+            // Rodapé com cores do tema
+            const nomeDesafio = document.getElementById('nomeDesafio').value || 'Desafio';
+            ctx.font = `bold 40px ${currentTheme.fontFamily}`;
+            ctx.fillStyle = currentTheme.primaryColor;
+            ctx.textAlign = 'center';
+            ctx.shadowColor = currentTheme.shadowColor;
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 5;
+            ctx.fillText(nomeDesafio, canvas.width / 2, canvas.height - 40);
+            
+            // Linha decorativa no rodapé
+            ctx.strokeStyle = currentTheme.secondaryColor;
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            drawWavyLine(ctx, canvas.width / 2 - 200, canvas.height - 70, canvas.width / 2 + 200, canvas.height - 70);
+        }
+
+        function exportarGaleriaIndividual(grupoIndex) {
+            const canvas = document.getElementById(`galeria-${grupoIndex}`);
+            
+            if (!canvas || !canvas.width) {
+                alert('Gere as galerias primeiro!');
+                return;
+            }
+            
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `galeria_super_barreiras_${grupoIndex + 1}_${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png', 1.0);
+        }
+
+        // Event listeners para campos de pessoas (agora com geração dinâmica)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aguardar geração dos campos
+            setTimeout(() => {
+                document.querySelectorAll('.pessoaNome, .pessoaEquipe, .pessoaPrefixo').forEach(input => {
+                    input.addEventListener('input', updateAllPreviews);
+                });
+            }, 100);
+        });
+
         // Desenhar previews iniciais
-        updateAllPreviews();
+        setTimeout(() => {
+            updateAllPreviews();
+        }, 200);
     </script>
 </body>
 </html>
